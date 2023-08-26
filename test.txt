@@ -1,5 +1,5 @@
 #Add Message
-curl -X POST -H "Content-Type: application/json" -d '{
+curl -X POST -H "Content-Type: application/json" -d "{
     "application_id": 123,
     "session_id": "session_456",
     "message_id": "msg_789",
@@ -15,3 +15,5 @@ curl "http://127.0.0.1:5000/GetMessage?sessionId=session_456"
 
 # Get Messages by Message ID
 curl "http://127.0.0.1:5000/GetMessage?messageId=msg_789"
+
+curl -X DELETE "http://127.0.0.1:5000/DeleteMessage?applicationId=1"
