@@ -9,34 +9,26 @@ class MessageRepository:
         self.db_config = {
             'user': os.getenv('user'),
             'password': os.getenv('MYSQL_ROOT_PASSWORD'),
-            'host': os.getenv('host'),
-            'database': 'messages'  # Specify the database here
+            'host': os.getenv('host')
         }
         self.cnx = mysql.connector.connect(**self.db_config)
         self.c = self.cnx.cursor()
         self.setup_database()
 
-
-
     def setup_database(self):
-        self.c.execute("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'messages'")
-        db_exists = self.c.fetchone()
-
-        if not db_exists:
-            self.c.execute("CREATE DATABASE messages")
-            self.cnx.database = 'messages'
-            self.c.execute('''
-                CREATE TABLE messages (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    application_id INT,
-                    session_id VARCHAR(255),
-                    message_id VARCHAR(255),
-                    participants TEXT,
-                    content TEXT
-                )
-            ''')
-            self.cnx.commit()
-
+        self.c.execute("CREATE DATABASE IF NOT EXISTS messages")
+        self.cnx.database = 'messages'
+        self.c.execute('''
+            CREATE TABLE IF NOT EXISTS messages (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                application_id INT,
+                session_id VARCHAR(255),
+                message_id VARCHAR(255),
+                participants TEXT,
+                content TEXT
+            )
+        ''')
+        self.cnx.commit()
     def add_message(self, data):
         application_id = data['application_id']
         session_id = data['session_id']
