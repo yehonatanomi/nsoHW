@@ -49,5 +49,26 @@ def get_message():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/DeleteMessage', methods=['DELETE'])
+def delete_message():
+    try:
+        application_id = request.args.get('applicationId')
+        session_id = request.args.get('sessionId')
+        message_id = request.args.get('messageId')
+
+        if application_id:
+            messages[:] = [msg for msg in messages if msg['application_id'] != int(application_id)]
+        elif session_id:
+            messages[:] = [msg for msg in messages if msg['session_id'] != session_id]
+        elif message_id:
+            messages[:] = [msg for msg in messages if msg['message_id'] != message_id]
+        else:
+            return jsonify({'error': 'Invalid parameters'}), 400
+
+        return jsonify({'message': 'Messages deleted successfully'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000)
