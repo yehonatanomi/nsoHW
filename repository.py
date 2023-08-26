@@ -44,13 +44,19 @@ class MessageRepository:
         participants = data['participants']
         content = data['content']
 
-        self.c.execute('''
-            INSERT INTO messages (application_id, session_id, message_id, participants, content)
-            VALUES (%s, %s, %s, %s, %s)
-        ''', (application_id, session_id, message_id, ', '.join(participants), content))
-
+        query = """
+                    INSERT INTO messages (application_id, session_id, message_id, participants, content)
+                    VALUES (%s, %s, %s, %s, %s)
+                """
+        values = (
+            data['application_id'],
+            data['session_id'],
+            data['message_id'],
+            ', '.join(data['participants']),
+            data['content']
+        )
+        self.c.execute(query, values)
         self.cnx.commit()
-
         return {'message': 'Message added successfully'}
 
     def get_message(self, params):
@@ -68,7 +74,7 @@ class MessageRepository:
             query = "SELECT * FROM messages WHERE message_id = %s"
             query_params = (message_id,)
         else:
-            return []
+            return 500
 
         self.c.execute(query, query_params)
         result = self.c.fetchall()
@@ -107,4 +113,4 @@ class MessageRepository:
         self.c.execute(query, query_params)
         self.cnx.commit()
 
-        return {'message': 'Message deleted successfully'}
+        return {'message': 'Messages deleted successfully'}

@@ -19,6 +19,8 @@ def add_message():
 def get_message():
     try:
         result = message_service.get_message(request.args)
+        if result == 500:
+            return jsonify({'error': str("not good parameter")}), 405
         return jsonify(result)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
